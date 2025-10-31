@@ -13,16 +13,25 @@ const adminRoutes = require("./routes/adminRoutes");
 const productAdminRoutes = require("./routes/productAdminRoutes");
 const adminOrderRoutes = require("./routes/adminOrderRoutes");
 
+dotenv.config();
+connectDB();
+
 const app = express();
 app.use(express.json());
-app.use(cors());
 
-dotenv.config();
+// ✅ CORS FIX — Allow Frontend Domain
+app.use(cors({
+  origin: [
+    "https://ecommerce-full-app-iyzy-8p1iu9n6l-ahmeds-projects-9319bc87.vercel.app",
+    "http://localhost:5173"
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
 
 const PORT = process.env.PORT || 3000;
 
-// Connect to MongoDB
-connectDB();
 app.get("/", (req, res) => {
   res.send("WELCOME TO RABBIT API!");
 });
@@ -40,6 +49,7 @@ app.use("/api", subscribeRoute);
 app.use("/api/admin/users", adminRoutes);
 app.use("/api/admin/products", productAdminRoutes);
 app.use("/api/admin/orders", adminOrderRoutes);
+
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
